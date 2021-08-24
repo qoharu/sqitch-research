@@ -16,8 +16,7 @@ jobs:
         run: sqitch --version
       - name: Waiting mysql service to be ready
         run: |
-          while ! mysqladmin ping -h 127.0.0.1 --silent; do
-              echo ".";
+          while ! wget localhost:3306 --silent; do
               sleep 1
           done
       - name: Deploy
