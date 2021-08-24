@@ -1,0 +1,34 @@
+name: Sqitch PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  sqitch-tests:
+    runs-on: ubuntu-latest
+    container: squhart/sqitch-mysql:8.0.25
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Check sqitch version
+        run: sqitch --version
+      - name: Waiting mysql service to be ready
+        run: |
+          while ! mysqladmin ping -h 127.0.0.1 --silent; do
+              echo ".";
+              sleep 1
+          done
+      - name: Deploy
+        run: sqitch deploy ${{ env.MYSQL_URI }}
+      - name: Verify
+        run: sqitch verify ${{ env.MYSQL_URI }}
+      - name: Revert
+        run: sqitch revert -s ${{ env.MYSQL_URI }}
+    env:
+      MYSQL_URI: db:mysql://sqitch_test:sqitch_test@127.0.0.1:3306/sqitch_test
+      MYSQL_ROOT_PASSWORD: sqitch_test
+      MYSQL_DATABASE: sqitch_test
+      MYSQL_USER: sqitch_test
+      MYSQL_PASSWORD: sqitch_test
