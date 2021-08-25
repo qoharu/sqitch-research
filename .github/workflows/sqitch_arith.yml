@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Verify MySQL connection from host
         run: |
-          sudo apt-get install -y mysql-client
+          apt-get install -y mysql-client
           mysql --host 127.0.0.1 --port 33306 -uroot -psqitch_test -e "SHOW DATABASES"
       - name: Check out repository code
         uses: actions/checkout@v2
