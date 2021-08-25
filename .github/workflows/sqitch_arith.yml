@@ -14,6 +14,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Check sqitch version
         run: sqitch --version
+      - name: Verify MySQL connection from host
+        run: |
+          apt-get install -y mysql-client
+          while ! mysql --host 127.0.0.1 --port 33306 -uroot -psqitch_test -e "SELECT 1"; do sleep 1; done
       - name: Deploy
         run: sqitch deploy db:mysql://root:sqitch_test@127.0.0.1:33306/sqitch_test
       - name: Verify
