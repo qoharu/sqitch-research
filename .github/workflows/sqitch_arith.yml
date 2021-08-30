@@ -7,7 +7,7 @@ on:
 jobs:
   sqitch-tests:
     runs-on: ubuntu-latest
-    container: squhart/sqitch-builder:1.1.0
+    container: ghcr.io/sayurbox/sqitch-image:1.0.0
 
     steps:
       - name: Check out repository code
@@ -29,8 +29,8 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_DATABASE: sqitch_test
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_USER: sqitch_test
+          MYSQL_PASSWORD: sqitch_test
           MYSQL_ROOT_PASSWORD: sqitch_test
-        ports:
-          - 33306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-        
