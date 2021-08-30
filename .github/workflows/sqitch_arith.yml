@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Install sqitch
         run: |
-          apt-get install -y libdbd-mysql-perl mysql-client build-essential perl perl-doc \
+          sudo apt-get install -y libdbd-mysql-perl mysql-client build-essential perl perl-doc \
           && apt-get install -y cpanminus \
           && cpanm --notest DWHEELER/App-Sqitch-v1.1.0.tar.gz
       - name: Check out repository code
@@ -27,7 +27,6 @@ jobs:
     services:
       mysql:
         image: mysql:5.7
-        
         env:
           MYSQL_DATABASE: sqitch_test
           MYSQL_HOST: 127.0.0.1
