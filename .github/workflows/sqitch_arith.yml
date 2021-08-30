@@ -7,28 +7,31 @@ on:
 jobs:
   sqitch-tests:
     runs-on: ubuntu-latest
-    container: squhart/sqitch-mysql:8.0.25
 
     steps:
+      - name: Install sqitch
+        run: |
+          sudo apt-get install -y libdbd-mysql-perl mysql-client build-essential perl perl-doc cpanminus \
+          && sudo cpanm --notest DWHEELER/App-Sqitch-v1.1.0.tar.gz
       - name: Check out repository code
         uses: actions/checkout@v2
       - name: Check sqitch version
         run: sqitch --version
-      - name: Waiting mysql service to be ready
-        run: |
-          while ! mysqladmin ping -h 127.0.0.1 --silent; do
-              echo ".";
-              sleep 1
-          done
       - name: Deploy
-        run: sqitch deploy ${{ env.MYSQL_URI }}
+        run: sqitch deploy db:mysql://root:sqitch_test@127.0.0.1:3306/sqitch_test
       - name: Verify
-        run: sqitch verify ${{ env.MYSQL_URI }}
+        run: sqitch verify db:mysql://root:sqitch_test@127.0.0.1:3306/sqitch_test
       - name: Revert
-        run: sqitch revert -s ${{ env.MYSQL_URI }}
-    env:
-      MYSQL_URI: db:mysql://sqitch_test:sqitch_test@127.0.0.1:3306/sqitch_test
-      MYSQL_ROOT_PASSWORD: sqitch_test
-      MYSQL_DATABASE: sqitch_test
-      MYSQL_USER: sqitch_test
-      MYSQL_PASSWORD: sqitch_test
+        run: sqitch revert -y db:mysql://root:sqitch_test@127.0.0.1:3306/sqitch_test
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_DATABASE: sqitch_test
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_USER: sqitch_test
+          MYSQL_PASSWORD: sqitch_test
+          MYSQL_ROOT_PASSWORD: sqitch_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
