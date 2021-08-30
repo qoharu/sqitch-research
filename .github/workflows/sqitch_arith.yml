@@ -22,7 +22,7 @@ jobs:
       - name: Verify
         run: sqitch verify db:mysql://root:sqitch_test@127.0.0.1:3306/sqitch_test
       - name: Revert
-        run: sqitch revert -s db:mysql://root:sqitch_test@127.0.0.1:3306/sqitch_test
+        run: sqitch revert -y db:mysql://root:sqitch_test@127.0.0.1:3306/sqitch_test
     services:
       mysql:
         image: mysql:5.7
