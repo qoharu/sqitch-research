@@ -23,10 +23,13 @@ jobs:
     services:
       mysql:
         image: mysql:5.7
+        
         env:
           MYSQL_DATABASE: sqitch_test
           MYSQL_HOST: 127.0.0.1
           MYSQL_USER: sqitch_test
           MYSQL_PASSWORD: sqitch_test
           MYSQL_ROOT_PASSWORD: sqitch_test
+        ports:
+          - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
