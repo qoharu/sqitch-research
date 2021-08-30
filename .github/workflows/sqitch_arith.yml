@@ -8,7 +8,7 @@ on:
       - "main"
 jobs:
   sqitch-tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     container: ghcr.io/sayurbox/sqitch-image:1.0.0
     steps:
       - name: Check out repository code
