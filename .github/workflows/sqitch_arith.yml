@@ -9,18 +9,19 @@ on:
 jobs:
   sqitch-tests:
     runs-on: ubuntu-latest
-    container: ghcr.io/sayurbox/sqitch-image:1.0.0
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+      - name: Download and Extract Sqitch
+        run: wget https://github.com/qoharu/sqitch-bundle/archive/refs/heads/master.zip && unzip master.zip
       - name: Check sqitch version
-        run: sqitch --version
+        run: ./sqitch-bundle-master/bin/sqitch --version
       - name: Deploy
-        run: sqitch deploy db:mysql://root:sqitch_test@mysql:3306/sqitch_test
+        run: ./sqitch-bundle-master/bin/sqitch deploy db:mysql://root:sqitch_test@mysql:3306/sqitch_test
       - name: Verify
-        run: sqitch verify db:mysql://root:sqitch_test@mysql:3306/sqitch_test
+        run: ./sqitch-bundle-master/bin/sqitch verify db:mysql://root:sqitch_test@mysql:3306/sqitch_test
       - name: Revert
-        run: sqitch revert -y db:mysql://root:sqitch_test@mysql:3306/sqitch_test
+        run: ./sqitch-bundle-master/bin/sqitch revert -y db:mysql://root:sqitch_test@mysql:3306/sqitch_test
     services:
       mysql:
         image: mysql:5.7
